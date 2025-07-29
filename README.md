@@ -21,4 +21,4 @@ decycle.uninstall()
 
 ## License
 
-MIT (LICENSE)
+[MIT](LICENSE)
