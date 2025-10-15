@@ -1,5 +1,6 @@
 import sys
 
+
 class LazyProxy:
     def __init__(self, module_name, obj_name):
         self.__module_name = module_name
@@ -27,13 +28,15 @@ class LazyProxy:
         return self._load_real_obj()(*args, **kwargs)
 
     def __getattr__(self, name):
-        if name in ('__deepcopy__', '__copy__'):
+        if name in ("__deepcopy__", "__copy__"):
             return getattr(self._load_real_obj(), name)
-            
+
         try:
             return getattr(self._load_real_obj(), name)
         except AttributeError as e:
-            raise AttributeError(f"Could not resolve attribute '{name}' on '{self.__obj_name}' from module '{self.__module_name}'. Original error: {e}") from e
+            raise AttributeError(
+                f"Could not resolve attribute '{name}' on '{self.__obj_name}' from module '{self.__module_name}'. Original error: {e}"
+            ) from e
 
     def __repr__(self):
         if self.__real_obj is not None:

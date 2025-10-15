@@ -5,6 +5,7 @@ from importlib.abc import MetaPathFinder
 from .loader import CircularImportLoader
 from .utils import get_project_root
 
+
 class CircularImportFinder(MetaPathFinder):
     def __init__(self):
         self._in_progress = set()
@@ -23,8 +24,8 @@ class CircularImportFinder(MetaPathFinder):
     def find_spec(self, fullname, path, target=None):
         if fullname in self._in_progress:
             return None
-        
-        if fullname in sys.modules or fullname.startswith(('__', 'builtins')):
+
+        if fullname in sys.modules or fullname.startswith(("__", "builtins")):
             return None
 
         self._in_progress.add(fullname)
@@ -33,12 +34,12 @@ class CircularImportFinder(MetaPathFinder):
             if not spec or not spec.origin:
                 return None
 
-            is_package = spec.origin.endswith('__init__.py')
-            is_py_file = spec.origin.endswith('.py')
-            
+            is_package = spec.origin.endswith("__init__.py")
+            is_py_file = spec.origin.endswith(".py")
+
             if not (is_py_file or is_package):
                 return None
-            
+
             if not self._is_in_project(spec.origin):
                 return None
 
@@ -46,9 +47,10 @@ class CircularImportFinder(MetaPathFinder):
                 fullname,
                 spec.origin,
                 loader=CircularImportLoader(spec),
-                submodule_search_locations=spec.submodule_search_locations
+                submodule_search_locations=spec.submodule_search_locations,
             )
         finally:
             self._in_progress.remove(fullname)
+
 
 _finder_instance = CircularImportFinder()
