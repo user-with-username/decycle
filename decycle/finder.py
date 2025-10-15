@@ -8,13 +8,17 @@ from .utils import get_project_root
 class CircularImportFinder(MetaPathFinder):
     def __init__(self):
         self._in_progress = set()
-        self.project_root = get_project_root()
+        self.project_roots = {get_project_root()}
+
+    def add_root(self, path):
+        if path:
+            self.project_roots.add(os.path.abspath(path))
 
     def _is_in_project(self, path):
         if not path:
             return False
         abs_path = os.path.abspath(path)
-        return abs_path.startswith(self.project_root)
+        return any(abs_path.startswith(root) for root in self.project_roots)
 
     def find_spec(self, fullname, path, target=None):
         if fullname in self._in_progress:

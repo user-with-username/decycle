@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "decycle"
-version = "1.0.0"
+version = "2.0.0"
 description = "Python circular imports resolver"
 authors = ["user-with-username"]
 license = "MIT"
