@@ -2,7 +2,6 @@ import threading
 
 _call_stack = threading.local()
 
-
 class RecursiveCallPreventer:
     def __init__(self, real_func):
         self._real_func = real_func
@@ -21,6 +20,16 @@ class RecursiveCallPreventer:
         finally:
             _call_stack.stack.pop()
         return result
+
+    def __hash__(self):
+        return hash(self._func_key)
+
+    def __eq__(self, other):
+        if isinstance(other, RecursiveCallPreventer):
+            return self._func_key == other._func_key
+        if hasattr(other, '__module__') and hasattr(other, '__name__'):
+            return (self._real_func.__module__, self._real_func.__name__) == (other.__module__, other.__name__)
+        return False
 
     def __repr__(self):
         return f"<RecursiveCallPreventer for {self._real_func}>"
